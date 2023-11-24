@@ -20,10 +20,10 @@ jobs:
         id: ip
         run: |
           agentIP=$(curl -s https:/api.ipify.org/)
-          echo $agentIP  >> "$GITHUB_OUTPUT"
+          echo "YOGI=$agentIP"  >> "$GITHUB_OUTPUT"
       - name: test
         env:
-          YOGI: ${{steps.ip.outputs.agentIP}}
+          YOGI: ${{steps.ip.outputs.YOGI}}
         run: echo "this is ip - $YOGI"
      # - name: githubrunner
      #  uses: azure@CLI@v1
