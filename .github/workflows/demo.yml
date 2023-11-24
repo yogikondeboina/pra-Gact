@@ -6,6 +6,7 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Get code
         uses: actions/checkout@v3
@@ -15,6 +16,17 @@ jobs:
         run: npm run lint
       - name: Test code
         run: npm run test
+      - name: check ip2
+        run: |
+          agentIP=(curl -s https:/api.ipify.org/)
+          echo $agentIP
+      - name: githubrunner
+        uses: azure@CLI@v1
+        with: 
+          inlineScript: |
+            set -eu 
+            agentIP=$(curl -s https:/api.ipify.org)
+            echo $agentIP
   build:
     needs: test
     runs-on: ubuntu-latest
