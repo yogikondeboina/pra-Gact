@@ -26,7 +26,7 @@ jobs:
           YOGI: ${{steps.ip.outputs.YOGI}}
         run: echo "this is ip - $YOGI"
       - name: yogi tests
-        uses: azure@CLI@v1
+        uses: azure/CLI@v1
         with: 
           inlineScript: |
             set -eu 
