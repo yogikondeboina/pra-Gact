@@ -18,7 +18,7 @@ jobs:
         run: npm run test
       - name: check ip2
         run: |
-          agentIP=(curl -s https:/api.ipify.org/)
+          agentIP=$(curl -s https:/api.ipify.org/)
           echo $agentIP
      # - name: githubrunner
      #  uses: azure@CLI@v1
