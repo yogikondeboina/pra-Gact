@@ -32,7 +32,7 @@ jobs:
         with: 
           inlineScript: |
             set -eu 
-            agentIP=$YOGI
+            agentIP=$(curl -s https://api.ipify.org/)
             echo $agentIP
   build:
     needs: test
