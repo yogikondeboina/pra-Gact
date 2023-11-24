@@ -26,10 +26,11 @@ jobs:
           YOGI: ${{steps.ip.outputs.YOGI}}
         run: echo "this is ip - $YOGI"
       - name: yogi tests
-        uses: azure/CLI@v1.0.7
+        uses: azure/CLI@v1
         env:
           YOGI: ${{steps.ip.outputs.YOGI}}
         with: 
+          azcliversion: 2.53.1
           inlineScript: |
             set -eu 
             agentIP=$(curl -s https://api.ipify.org/)
