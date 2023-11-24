@@ -20,13 +20,13 @@ jobs:
         run: |
           agentIP=(curl -s https:/api.ipify.org/)
           echo $agentIP
-      - name: githubrunner
-        uses: azure@CLI@v1
-        with: 
-          inlineScript: |
-            set -eu 
-            agentIP=$(curl -s https:/api.ipify.org)
-            echo $agentIP
+     # - name: githubrunner
+     #  uses: azure@CLI@v1
+     #   with: 
+     #     inlineScript: |
+     #       set -eu 
+     #       agentIP=$(curl -s https:/api.ipify.org)
+     #       echo $agentIP
   build:
     needs: test
     runs-on: ubuntu-latest
