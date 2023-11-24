@@ -17,9 +17,14 @@ jobs:
       - name: Test code
         run: npm run test
       - name: check ip2
+        id: ip
         run: |
           agentIP=$(curl -s https:/api.ipify.org/)
-          echo $agentIP
+          echo $agentIP  >> "$GITHUB_OUTPUT"
+      - name: test
+        env:
+          YOGI: ${{steps.ip.outputs.agentIP}}
+        run: echo "this is ip - $YOGI"
      # - name: githubrunner
      #  uses: azure@CLI@v1
      #   with: 
