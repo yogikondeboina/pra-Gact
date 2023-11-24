@@ -25,13 +25,13 @@ jobs:
         env:
           YOGI: ${{steps.ip.outputs.YOGI}}
         run: echo "this is ip - $YOGI"
-     # - name: githubrunner
-     #  uses: azure@CLI@v1
-     #   with: 
-     #     inlineScript: |
-     #       set -eu 
-     #       agentIP=$(curl -s https:/api.ipify.org)
-     #       echo $agentIP
+      - name: yogi tests
+        uses: azure@CLI@v1
+        with: 
+          inlineScript: |
+            set -eu 
+            agentIP=$(curl -s https:/api.ipify.org)
+            echo $agentIP
   build:
     needs: test
     runs-on: ubuntu-latest
