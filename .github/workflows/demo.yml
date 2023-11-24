@@ -27,10 +27,12 @@ jobs:
         run: echo "this is ip - $YOGI"
       - name: yogi tests
         uses: azure/CLI@v1
+        env:
+          YOGI: ${{steps.ip.outputs.YOGI}}
         with: 
           inlineScript: |
             set -eu 
-            agentIP=$(curl -s https:/api.ipify.org)
+            agentIP=$YOGI
             echo $agentIP
   build:
     needs: test
