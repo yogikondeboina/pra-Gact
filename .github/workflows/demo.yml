@@ -1,53 +1,63 @@
-name: Deploy website
+name: CI/CD Pipeline with Environments
+
 on:
   push:
     branches:
+      - github_actions
       - main
+      - qa
+      - dev
+  pull_request:
+    branches:
+      - main
+      - qa
+      - dev
+
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Get code
-        uses: actions/checkout@v3
-      - name: Install dependencies
-        run: npm ci
-      - name: Lint code
-        run: npm run lint
-      - name: Test code
-        run: npm run test
-      - name: check ip2
-        id: ip
-        run: |
-          agentIP=$(curl -s https:/api.ipify.org/)
-          echo "YOGI=$agentIP"  >> "$GITHUB_OUTPUT"
-      - name: test
-        env:
-          YOGI: ${{steps.ip.outputs.YOGI}}
-        run: echo "this is ip - $YOGI"
-      - name: yogi tests
-        uses: azure/CLI@v1
-        env:
-          YOGI: ${{steps.ip.outputs.YOGI}}
-        with: 
-          azcliversion: 2.53.1
-          inlineScript: |
-            set -eu 
-            agentIP=$(curl -s https://api.ipify.org/)
-            echo $agentIP
   build:
-    needs: test
+    name: Build the Application
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: development
+      DEBUG: true
     steps:
-      - name: Get code
+      - name: Checkout Code
         uses: actions/checkout@v3
-      - name: Install dependencies
-        run: npm ci
-      - name: Build website
-        run: npm run build
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Run Linting
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
+
   deploy:
+    name: Deploy Application
     needs: build
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        environment: [dev, qa, prod, github_actions]
+    env:
+      NODE_ENV: ${{ matrix.environment }}
     steps:
-      - name: Deploy
-        run: echo "Deploying..."
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Deploy to ${{ matrix.environment | upper }}
+        env:
+          DEPLOY_ENV: ${{ matrix.environment }}
+          API_KEY: ${{ secrets.${{ matrix.environment | upper }}_API_KEY }}
+          DATABASE_URL: ${{ secrets.${{ matrix.environment | upper }}_DATABASE_URL }}
+        run: |
+          echo "Deploying to $DEPLOY_ENV environment..."
+          echo "Using API Key: $API_KEY"
+          echo "Database URL: $DATABASE_URL"
+          # Replace with actual deployment logic
