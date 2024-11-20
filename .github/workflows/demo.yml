@@ -16,7 +16,7 @@ on:
 
 jobs:
   build:
-    name: Build the Application
+    name: Build the Application ${{ github.ref_name }}
     runs-on: ubuntu-latest
     env:
       NODE_ENV: development
