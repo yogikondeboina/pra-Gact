@@ -1,4 +1,4 @@
-name: CI/CD Pipeline with Environments
+name: CI/CD Pipeline with Branch-Based Deployment
 
 on:
   push:
@@ -42,18 +42,50 @@ jobs:
     name: Deploy Application
     needs: build
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        environment: [dev, qa, prod, github_actions]
-    env:
-      NODE_ENV: ${{ matrix.environment }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Deploy to Environment
+      - name: Deploy to Dev
+        if: github.ref == 'refs/heads/dev'
+        env:
+          API_KEY: ${{ secrets.DEV_API_KEY }}
+          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
         run: |
-          echo "Deploying to ${{ matrix.environment }} environment..."
-          echo "Using API Key: ${{ secrets[format('{0}_API_KEY', matrix.environment)] }}"
-          echo "Database URL: ${{ secrets[format('{0}_DATABASE_URL', matrix.environment)] }}"
-          # Replace with actual deployment logic
+          echo "Deploying to Dev environment..."
+          echo "Using API Key: $API_KEY"
+          echo "Database URL: $DATABASE_URL"
+          # Add your deployment logic here
+
+      - name: Deploy to QA
+        if: github.ref == 'refs/heads/qa'
+        env:
+          API_KEY: ${{ secrets.QA_API_KEY }}
+          DATABASE_URL: ${{ secrets.QA_DATABASE_URL }}
+        run: |
+          echo "Deploying to QA environment..."
+          echo "Using API Key: $API_KEY"
+          echo "Database URL: $DATABASE_URL"
+          # Add your deployment logic here
+
+      - name: Deploy to Production
+        if: github.ref == 'refs/heads/main'
+        env:
+          API_KEY: ${{ secrets.PROD_API_KEY }}
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+        run: |
+          echo "Deploying to Production environment..."
+          echo "Using API Key: $API_KEY"
+          echo "Database URL: $DATABASE_URL"
+          # Add your deployment logic here
+
+      - name: Deploy to GitHub Actions
+        if: github.ref == 'refs/heads/github_actions'
+        env:
+          API_KEY: ${{ secrets.GITHUB_ACTIONS_API_KEY }}
+          DATABASE_URL: ${{ secrets.GITHUB_ACTIONS_DATABASE_URL }}
+        run: |
+          echo "Deploying to GitHub Actions test environment..."
+          echo "Using API Key: $API_KEY"
+          echo "Database URL: $DATABASE_URL"
+          # Add your deployment logic here
