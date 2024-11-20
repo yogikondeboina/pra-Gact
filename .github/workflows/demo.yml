@@ -7,6 +7,7 @@ on:
       - main
       - qa
       - dev
+      - actions
   pull_request:
     branches:
       - main
