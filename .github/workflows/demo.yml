@@ -1,4 +1,4 @@
-name: CI/CD Pipeline with Branch-Based Deployment
+name: CI/CD Pipeline with Fallback to Dev Deployment
 
 on:
   push:
@@ -55,7 +55,6 @@ jobs:
           echo "Deploying to Dev environment..."
           echo "Using API Key: $API_KEY"
           echo "Database URL: $DATABASE_URL"
-          # Add your deployment logic here
 
       - name: Deploy to QA
         if: github.ref == 'refs/heads/qa'
@@ -66,7 +65,6 @@ jobs:
           echo "Deploying to QA environment..."
           echo "Using API Key: $API_KEY"
           echo "Database URL: $DATABASE_URL"
-          # Add your deployment logic here
 
       - name: Deploy to Production
         if: github.ref == 'refs/heads/main'
@@ -77,7 +75,6 @@ jobs:
           echo "Deploying to Production environment..."
           echo "Using API Key: $API_KEY"
           echo "Database URL: $DATABASE_URL"
-          # Add your deployment logic here
 
       - name: Deploy to GitHub Actions
         if: github.ref == 'refs/heads/github_actions'
@@ -88,4 +85,13 @@ jobs:
           echo "Deploying to GitHub Actions test environment..."
           echo "Using API Key: $API_KEY"
           echo "Database URL: $DATABASE_URL"
-          # Add your deployment logic here
+
+      - name: Deploy to Dev as Fallback
+        if: github.ref != 'refs/heads/main' && github.ref != 'refs/heads/qa' && github.ref != 'refs/heads/github_actions' && github.ref != 'refs/heads/dev'
+        env:
+          API_KEY: ${{ secrets.DEV_API_KEY }}
+          DATABASE_URL: ${{ secrets.DEV_DATABASE_URL }}
+        run: |
+          echo "Fallback: Deploying to Dev environment..."
+          echo "Using API Key: $API_KEY"
+          echo "Database URL: $DATABASE_URL"
